@@ -1,0 +1,3 @@
+/audiofiles/*.mp3
+config.json
+*.prod.json
