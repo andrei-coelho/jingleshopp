@@ -1,8 +1,7 @@
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([\w\-\_]+)/(.+)/?$ index.php?request=$1&sub=$2 [NC,L]
-RewriteRule ^([\w\-\_]+)$ index.php?request=$1 [NC,L]
+RewriteRule ^(.*)$ index.php?request=$1 [NC,L]
 
 <files ~ "^.*\.([Hh][Tt][Aa])">
 order allow,deny

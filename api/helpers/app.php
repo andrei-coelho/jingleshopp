@@ -36,7 +36,6 @@ function jwt_base64encode($value){
 
 }
 
-
 function jwt_gen(array $header, array $body){
 
     $salt   = config('salt');
@@ -59,5 +58,15 @@ function jwt_verify($hash){
         base64_decode($parts[2]) == hash_hmac($alg, $parts[0].".".$parts[1], $salt, true) 
         ? json_decode(base64_decode($parts[1]), true) 
         : false;
+
+}
+
+
+function is_admin(){
+    // verifica se é um administrador
+    $sess   = body(['session'])['session'];
+    $values = jwt_verify($sess);
+    
+    if(!$values || $values['type'] != 'admin') error(401);
 
 }

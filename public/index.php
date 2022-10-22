@@ -2,11 +2,13 @@
 
 include "../src/request.php";
 
-$req = isset($_GET['request']) ? $_GET['request'] : 'home';
-$sub = isset($_GET['sub']) ? var_decode($_GET['sub']) : false;
+$request = isset($_GET['request']) ? explode('/', $_GET['request']) : 'home';
+
+$req  = array_shift($request);
+$sub = join('/', $request);
 
 (function($req, $sub){
-    
+
     if($req == "api"){
         include "../api/api.php";
         return;

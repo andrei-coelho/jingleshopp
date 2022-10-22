@@ -9,12 +9,12 @@ class Config {
     private $database;
 
     private function __construct(){
-        $conf = json_decode(file_get_contents("../config.json"), true);
+        $conf = \json_decode(file_get_contents("../config.json"), true);
         $this->data = $conf;
         $isInProduction = $conf['production'];
         $database = $isInProduction ? "../database.prod.json" : "../database.local.json"; 
         $this->url = $isInProduction ? $conf['url_prod'] : $conf['url_dev'];
-        $this->database = json_decode(file_get_contents($database), true);
+        $this->database = \json_decode(file_get_contents($database), true);
     }
 
     private static function instance(){

@@ -2,15 +2,14 @@
 
 function _init($func){
 
-    $privates = ['create', 'update', 'delete'];
+    $privates = [
+        'create', 
+        'update', 
+        'delete', 
+        //'gerarLink'
+    ];
 
-    if(count(VARS) == 0) {
-        // error(400);
-    }
-
-    if(in_array($func, $privates)){
-        // verifica se é um administrador
-    }
+    if(in_array($func, $privates)) is_admin() ;
 
 }
 
@@ -21,7 +20,7 @@ function getLinkedFiles(){
     
     if(count($token) < 2) error(400);
 
-    $values  = jwt_verify(urldecode($token[1]));
+    $values  = jwt_verify(urldecode(str_replace('_', '%', $token[1])));
     $id      = (int)$values['id'];
     $version = (int)$values['version'];
 
@@ -78,11 +77,37 @@ function getLinkedFiles(){
 
 }
 
+
+function gerarLink(){
+
+    $card_id = isset(VARS[0]) ? (int)VARS[0] : 0;
+    
+    $query = _query(
+        "SELECT 
+            card.id, card.version 
+        FROM card WHERE card.id = $card_id
+    ");
+
+    if($query->rowCount() == 0) error();
+
+    $card = $query->fetchAssoc();
+
+    $jwt = jwt_gen(['alg' => 'sha256'], [
+        'id'      => $card['id'],
+        'version' => $card['version'],
+        'created' => date('d-m-Y H:i:s')
+    ]);
+
+    response(url().'/audiocard/card/t='.str_replace('%', '_', urlencode($jwt)));
+
+}
+
+
 function generateToken(){
 
     $jwt = jwt_gen(['alg' => 'sha256'], [
         'id' => 1,
-        'version' => 1,
+        'version' => 2,
         'created' => date('d-m-Y H:i:s')
     ]);
 
