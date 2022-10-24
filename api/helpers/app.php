@@ -61,12 +61,21 @@ function jwt_verify($hash){
 
 }
 
-
 function is_admin(){
-    // verifica se é um administrador
+
     $sess   = body(['session'])['session'];
     $values = jwt_verify($sess);
     
     if(!$values || $values['type'] != 'admin') error(401);
 
+    $id    = $values['id'];
+    $nonce = $values['nonce'];
+
+    if(_query("SELECT id FROM admin WHERE id = $id AND nonce = $nonce")->rowCount() == 0)
+        error(401);
+
+}
+
+function generate_slug($name){
+    return hash('sha256', date('dmYHis').mt_rand(0,10000).$name);
 }

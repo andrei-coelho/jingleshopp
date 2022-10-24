@@ -6,12 +6,97 @@ function _init($func){
         'create', 
         'update', 
         'delete', 
-        //'gerarLink'
+        'gerarLink',
+        'list'
     ];
 
     if(in_array($func, $privates)) is_admin() ;
 
 }
+
+function create(){
+
+    $values = body(['titulo', 'pessoa', 'email']);
+    
+    $titulo = $values['titulo'];
+    $pessoa = $values['pessoa'];
+    $email  = $values['email'];
+
+    if(!_exec("INSERT INTO card (titulo, pessoa, email, createdAt) 
+    VALUES ('$titulo', '$pessoa', '$email', now())"))
+        error(500);
+
+    response();
+
+}
+
+function update(){
+
+    $card_id = isset(VARS[0]) ? (int)VARS[0] : 0;
+    $values  = body(['pessoa', 'email']);
+    
+    $pessoa  = $values['pessoa'];
+    $email   = $values['email'];
+    
+    if(!_exec(
+        "UPDATE card SET pessoa = '$pessoa', email = '$email'
+            WHERE id = $card_id")) error(500);
+    
+    response();
+
+}
+
+function delete(){
+
+    $card_id = isset(VARS[0]) ? (int)VARS[0] : 0;
+
+    $filesq = _query("SELECT slug FROM file WHERE card_id = $card_id");
+    if($filesq ->rowCount() > 0){
+        $files = $filesq->fetchAllAssoc();
+        foreach ($files as $file) {
+            $slug = $file['slug'];
+            unlink("../audiofiles/$slug");
+        }
+    }
+    
+    _exec("DELETE FROM card WHERE id = $card_id");
+    
+    resonse();
+
+}
+
+
+function list_cards(){
+
+    $query = _query(
+        "SELECT 
+            card.id, 
+            card.titulo, 
+            card.pessoa, 
+            card.email,
+            card.version,
+            ( SELECT 
+                count(file.id) 
+              FROM  file 
+              WHERE file.card_id = card.id
+            ) as total_files
+        FROM card; 
+    ");
+
+    response($query->fetchAllAssoc());
+
+}
+
+function changeVersion(){
+
+    $card_id = isset(VARS[0]) ? (int)VARS[0] : 0;
+
+    if(!_exec("UPDATE card SET version = version + 1 WHERE id = $card_id"))
+        error(500);
+
+    response();
+
+} 
 
 function getLinkedFiles(){
 
@@ -31,8 +116,7 @@ function getLinkedFiles(){
                 card.pessoa,
                 card.email,
                 file.nome,
-                file.slug,
-                file.seconds
+                file.slug
            FROM file
            JOIN card ON card.id = file.card_id 
           WHERE card.id = $id AND card.version = $version
@@ -99,22 +183,5 @@ function gerarLink(){
     ]);
 
     response(url().'/audiocard/card/t='.str_replace('%', '_', urlencode($jwt)));
-
-}
-
-
-function generateToken(){
-
-    $jwt = jwt_gen(['alg' => 'sha256'], [
-        'id' => 1,
-        'version' => 2,
-        'created' => date('d-m-Y H:i:s')
-    ]);
-
-    response('t='.urlencode($jwt));
-}
-
-function create(){
-
 
 }

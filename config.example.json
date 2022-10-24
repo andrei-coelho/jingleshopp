@@ -2,5 +2,6 @@
     "production":false,
     "salt":"",
     "url_prod":"",
-    "url_dev":""
+    "url_dev":"",
+    "admin_pass":""
 }

@@ -3,70 +3,85 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/icon.png">
+    <link rel="stylesheet" href="/public/bootstrap/bootstrap.css">
     <title>Home</title>
-</head>
-<body>
+    <style>
 
-    <button id="play" style="display: none;">play</button>
-    <button id="pause">pause</button>
-
-    <script>
-
-        const sources = [];
-
-        function _base64ToArrayBuffer(base64) {
-            var binary_string = window.atob(base64);
-            var len = binary_string.length;
-            var bytes = new Uint8Array(len);
-            for (var i = 0; i < len; i++) {
-                bytes[i] = binary_string.charCodeAt(i);
-            }
-            return bytes.buffer;
+        .loadim {
+            width: 10px;
+            margin-top: 8px;
+            height: 2px;
+            background-color:black;
+            float: left;
+            margin-left: 3px;
         }
 
+        .do-animation .anim1 {
+            animation: animate 0.3s infinite alternate;
+            animation-delay: 0.1s;
+        }
         
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-        let source;
-
-        async function _request(){
-
-            var ini = 0;
-
-            let req = "http://localhost:8902/api/files/get/"
-            const res = await fetch(req, {
-                
-            });
-            const data = await res.json();
-
-
-            source = audioCtx.createBufferSource();
-            audioCtx.decodeAudioData(
-                _base64ToArrayBuffer(data.data),
-                (buffer) => {
-                    source.buffer = buffer;
-                    source.connect(audioCtx.destination);
-                    source.loop = true;
-                },
-                (err) => console.error(`Error with decoding audio data: ${err.err}`)
-            )
-            
-            const playButton = document.querySelector("#play");
-            playButton.style.display = "inline"
-            playButton.addEventListener('click', e => {
-                console.log("deu play");
-                source.start(0,5);
-            })
-
-            document.querySelector("#pause").addEventListener('click', e => {
-                source.stop(0);
-            })
-
+        .do-animation .anim2 {
+            animation: animate 0.3s infinite alternate;
+            animation-delay: 0.3s;
         }
 
-        _request();
+        .do-animation .anim3 {
+            animation: animate 0.3s infinite alternate;
+            animation-delay: 0.2s;
+        }
 
-    </script>
+        .do-animation .anim4 {
+            animation: animate 0.3s infinite alternate;
+            animation-delay: 0.4s;
+        }
+
+        .do-animation .anim5 {
+            animation: animate 0.3s infinite alternate;
+            animation-delay: 0.0s;
+        }
+
+        @keyframes animate {
+            from {
+                height:2px;
+                margin-top:38px;
+            }
+            to {
+                height:40px;
+                margin-top:0px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-primary">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <img class="d-block mx-auto" style="width: 200px;" src="/public/imagens/logo_jingleshopp.png" alt="">
+            </div>
+        </div>
+        <div class="row justify-content-center mt-5">
+            <div class="col-4">
+                <div style="width: 70px;" class="d-block mx-auto do-animation">
+                    <div class="anim1 loadim"></div>
+                    <div class="anim2 loadim"></div>
+                    <div class="anim3 loadim"></div>
+                    <div class="anim4 loadim"></div>
+                    <div class="anim5 loadim"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <h3 class="text-center text-black py-3">
+                em construção...
+            </h3>
+        </div>
+        <div class="col-12">
+            <img class="d-block mx-auto" style="width: 300px;" src="/public/imagens/logo_sotaque.png" alt="">
+        </div>
+    </div>
     
 </body>
 </html>

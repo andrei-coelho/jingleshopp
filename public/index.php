@@ -2,7 +2,7 @@
 
 include "../src/request.php";
 
-$request = isset($_GET['request']) ? explode('/', $_GET['request']) : 'home';
+$request = isset($_GET['request']) ? explode('/', $_GET['request']) : ['home'];
 
 $req  = array_shift($request);
 $sub = join('/', $request);
