@@ -75,6 +75,7 @@ function list_cards(){
             card.pessoa, 
             card.email,
             card.version,
+            card.email_enviado,
             ( SELECT 
                 count(file.id) 
               FROM  file 

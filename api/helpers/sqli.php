@@ -4,7 +4,7 @@ use libs\sqli\SQLi as sqli;
 use libs\sqli\DataBase as db;
 
 db::open_links((function(){
-    _error(500, "Internal Server Error - Problem to connect database");
+    error(500);
 }));
 
 function _query($query) {
